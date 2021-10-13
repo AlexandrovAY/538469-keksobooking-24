@@ -1,29 +1,37 @@
-function getRandomIntInclusive(min, max) {
-  if (min < 0 || max < 0) {
-    return 'Аргументы функции должны быть положительными';
+function UserException (message) {
+  this.message = message;
+  this.name = 'User exception';
+}
+
+const getRandomInt = (lower, upper) => {
+  if (lower >= upper || lower < 0) {
+    throw new UserException('Неверно переданны аргументы при вызове функции');
   }
-  if (max <= min) {
-    const intermediate = min;
-    min = max;
-    max = intermediate;
-  }
-  min = Math.ceil(min);
-  max = Math.floor(max);
+
+  const min = Math.ceil(lower);
+  const max = Math.floor(upper);
+
   return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+const getRandomFloat = (min, max, fractionDigits) => {
+  if (min >= max || min < 0) {
+    throw new Error('Аргументы функции должны быть положительными');
+  }
+
+  return Number((Math.random() * (max - min) + min).toFixed(fractionDigits));
+};
+
+try {
+  getRandomInt(10, 11);
+} catch (e) {
+  // eslint-disable-next-line no-console
+  console.log(e.message);
 }
 
-function randomFloatFromInterval (min, max, fractionDigits) {
-  if (min < 0 || max < 0) {
-    return 'Аргументы функции должны быть положительными';
-  }
-  if (max <= min) {
-    const intermediate = min;
-    min = max;
-    max = intermediate;
-  }
-  const fractionMultiplier = Math.pow(10, fractionDigits);
-  return Math.floor((Math.random() * (max - min) + min) * fractionMultiplier) / fractionMultiplier;
+try {
+  getRandomFloat(10, 10, 4);
+} catch (e) {
+  // eslint-disable-next-line no-console
+  console.log(e.message);
 }
-
-getRandomIntInclusive(10, 10);
-randomFloatFromInterval(10, 11, 1);
