@@ -24,14 +24,14 @@ const getRandomFloat = (min, max, fractionDigits) => {
 
 try {
   getRandomInt(10, 11);
-} catch (e) {
+} catch (err) {
   // eslint-disable-next-line no-console
-  console.log(e.message);
+  console.log(err.message);
 }
 
 try {
   getRandomFloat(10, 10, 4);
-} catch (e) {
+} catch (err) {
   // eslint-disable-next-line no-console
-  console.log(e.message);
+  console.log(err.message);
 }
