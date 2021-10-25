@@ -1,41 +1,19 @@
-const getRandomInt = (lower, upper) => {
-  if (lower >= upper || lower < 0) {
-    throw new Error ('Неверно переданны аргументы при вызове функции');
-  }
+// imports
 
-  const min = Math.ceil(lower);
-  const max = Math.floor(upper);
+// const
+const ARGUMENT_PASSING_ERROR = 'Неверно переданны аргументы при вызове функции';
 
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+const MIN_LATITUDE = 35.65;
 
-// eslint-disable-next-line no-unused-vars
-const getRandomFloat = (min, max, fractionDigits) => {
-  if (min >= max || min < 0) {
-    throw ('Аргументы функции должны быть положительными');
-  }
+const MAX_LATITUDE = 35.7;
 
-  return Number((Math.random() * (max - min) + min).toFixed(fractionDigits));
-};
+const MIN_LONGITUDE = 139.7;
 
-const randomAuthor = () => {
-  const number = getRandomInt(1, 10);
-  return {
-    avatar: `img/avatars/user${number < 10 ? `0${  number}` : number}.png`,
-  };
-};
+const MAX_LONGITUDE = 139.8;
 
-const getCoordinates = (min, max, digits) => {
-  const lower = Math.min(min, max);
-  const upper = Math.max(min, max);
-  const result = Math.random() * (upper - lower) + lower;
-  return result.toFixed(digits);
-};
+const NUMBER_OF_OBJECTS = 10;
 
-const getCoordinatesLatitude = getCoordinates(35.65, 35.7, 5);
-const getCoordinatesLongitude = getCoordinates(139.7, 139.8, 5);
-
-const typeOfHousing = [
+const TYPES = [
   'palace',
   'flat',
   'house',
@@ -43,13 +21,13 @@ const typeOfHousing = [
   'hotel',
 ];
 
-const checkInTime = [
+const CHECK_IN_TIME = [
   '12:00',
   '13:00',
   '14:00',
 ];
 
-const features = [
+const FEATURES = [
   'wifi',
   'dishwasher',
   'parking',
@@ -58,11 +36,31 @@ const features = [
   'conditioner',
 ];
 
-const photo = [
+const PHOTO = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
+
+// selectors
+
+// function
+const getRandomInt = (lower, upper) => {
+  if (lower >= upper || lower < 0) {
+    throw new Error (ARGUMENT_PASSING_ERROR);
+  }
+
+  const min = Math.ceil(lower);
+  const max = Math.floor(upper);
+
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+const createRandomAuthor = (index) => ({
+  avatar: `img/avatars/user${++index < 10 ? `0${  index}` : index}.png`,
+});
+
+const getRandomArrayElement = (array) => array[getRandomInt(0, array.length - 1)];
 
 const getArrayOfStrings = (array) => array.reduce((acc, value) => {
   if (getRandomInt(0, 1)) {
@@ -71,29 +69,43 @@ const getArrayOfStrings = (array) => array.reduce((acc, value) => {
   return acc;
 },[]);
 
-const randomOffer = () => ({
+const getRandomFloat = (min, max, fractionDigits) => {
+  if(min >= max || min < 0) {
+    throw new Error (ARGUMENT_PASSING_ERROR);
+  }
+
+  return Number((Math.random() * (max - min) + min).toFixed(fractionDigits));
+};
+
+const createRandomOffer = (latitude, longitude) => ({
   title: 'Милая, уютная квартирка',
-  address: `${getCoordinatesLatitude}, ${getCoordinatesLongitude}`,
+  address: `${latitude}, ${longitude}`,
   price: getRandomInt(100, 10000),
-  type: typeOfHousing[getRandomInt(0, typeOfHousing.length - 1)],
-  rooms: getRandomInt(1, 3),
-  guests: getRandomInt(0, 3),
-  checkin: checkInTime[getRandomInt(0, checkInTime.length - 1)],
-  checkout: checkInTime[getRandomInt(0, checkInTime.length - 1)],
-  features: getArrayOfStrings(features),
+  type: getRandomArrayElement(TYPES),
+  rooms: getRandomInt(1, 10),
+  guests: getRandomInt(0, 10),
+  checkin: getRandomArrayElement(CHECK_IN_TIME),
+  checkout: getRandomArrayElement(CHECK_IN_TIME),
+  features: getArrayOfStrings(FEATURES),
   description: 'Уютная квартирка на берегу моря',
-  photos: getArrayOfStrings(photo),
+  photos: getArrayOfStrings(PHOTO),
 });
 
-const createObject = () => ({
-  author: randomAuthor(),
-  offer: randomOffer(),
-  location: {
-    lat: getCoordinatesLatitude,
-    lng: getCoordinatesLongitude,
-  },
-});
+const createObject = (index) => {
+  const latitude = getRandomFloat(MIN_LATITUDE, MAX_LATITUDE, 5);
+  const longitude = getRandomFloat(MIN_LONGITUDE, MAX_LONGITUDE, 5);
 
-const createArray = () => Array.from({length: 10}, createObject);
+  return {
+    author: createRandomAuthor(index),
+    offer: createRandomOffer(latitude, longitude),
+    location: {
+      lat: latitude,
+      lng: longitude,
+    },
+  };
+};
 
+const createArray = () => Array.from({length: NUMBER_OF_OBJECTS}, (_, index) => createObject(index));
+
+// exec
 createArray();
