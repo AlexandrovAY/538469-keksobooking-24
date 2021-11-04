@@ -1,6 +1,9 @@
 import {createArray} from './data.js';
 import {createCard} from './card.js';
 
-const listOfAds = createArray();
+const map = document.querySelector('#map-canvas');
 
-createCard(listOfAds);
+const listOfAds = createArray();
+const card = createCard(listOfAds[0]);
+
+map.appendChild(card);
